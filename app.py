@@ -1,7 +1,16 @@
 from flask import Flask
 from random import randint
+from pathlib import Path
+import importlib
 
 app = Flask(__name__)
+
+for file in Path("routes").glob("*.py"):
+    if file.name == "__init__.py":
+        continue
+
+    module = importlib.import_module(f"routes.{file.stem}")
+    module.register(app)
 
 @app.route("/")
 def root():
@@ -33,3 +42,6 @@ def root():
     </html>
     """
     return pre + load + post
+
+    if __name__ == "__main__":
+        app.run
